@@ -184,6 +184,84 @@
       stroke-width: 2.4;
     }
 
+    .nav-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 170px;
+      min-height: 34px;
+      padding: 0 32px 0 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+      font-family: var(--sans);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 160ms ease, background 160ms ease, width 200ms ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-input:focus {
+      width: 220px;
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: color 120ms ease, background 120ms ease;
+    }
+
+    .search-clear:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .search-clear svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
+    }
+
+    .tool-card.is-dimmed {
+      opacity: 0.28;
+      pointer-events: none;
+    }
+
+    .tool-card.is-match {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.3);
+    }
+
     .hero {
       min-height: calc(100vh - 70px);
       padding: 76px 0 74px;
@@ -1083,6 +1161,19 @@
     </a>
 
     <nav class="nav-links" aria-label="页面导航">
+      <div class="nav-search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input class="search-input" type="search" placeholder="" data-search-input autocomplete="off">
+        <button class="search-clear" type="button" data-search-clear aria-label="清除搜索" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
       <a class="nav-link" href="#tools">Tools</a>
       <a class="nav-link" href="#workflow">Structure</a>
       <a class="nav-cta" href="Json/index.html">
@@ -1981,6 +2072,159 @@
       };
 
       boot();
+
+      /* ---- search ---- */
+      const searchInput = document.querySelector("[data-search-input]");
+      const searchClear = document.querySelector("[data-search-clear]");
+
+      if (searchInput && searchClear) {
+        const fuzzyMatch = (text, query) => {
+          const chars = query.toLowerCase().replace(/\s+/g, "");
+          const target = text.toLowerCase();
+          let charIndex = 0;
+          for (let i = 0; i < target.length && charIndex < chars.length; i += 1) {
+            if (target[i] === chars[charIndex]) {
+              charIndex += 1;
+            }
+          }
+          return charIndex === chars.length;
+        };
+
+        const collectSearchable = () => {
+          const items = [];
+          const libraryPages = track.querySelectorAll(".folder-page");
+          libraryPages.forEach((page, libraryIndex) => {
+            page.querySelectorAll("[data-folder-group]").forEach((group) => {
+              const folderName = (group.dataset.folderName || "");
+              const cards = group.querySelectorAll("[data-folder-card]");
+              cards.forEach((card, cardIndex) => {
+                const title = (card.querySelector("h3")?.textContent || "");
+                const desc = (card.querySelector("p")?.textContent || "");
+                const tags = Array.from(card.querySelectorAll(".tag")).map((t) => t.textContent).join(" ");
+                items.push({
+                  card,
+                  group,
+                  cardIndex,
+                  libraryIndex,
+                  folderName,
+                  searchText: `${folderName} ${title} ${desc} ${tags}`
+                });
+              });
+            });
+          });
+          return items;
+        };
+
+        const performSearch = (query) => {
+          const trimmed = query.trim();
+          const allItems = collectSearchable();
+
+          track.querySelectorAll("[data-folder-card]").forEach((card) => {
+            card.classList.remove("is-dimmed", "is-match");
+          });
+
+          searchClear.hidden = !trimmed;
+
+          if (!trimmed) {
+            return;
+          }
+
+          const matched = allItems.filter((item) => fuzzyMatch(item.searchText, trimmed));
+          const matchedCards = new Set(matched.map((item) => item.card));
+
+          allItems.forEach((item) => {
+            if (matchedCards.has(item.card)) {
+              item.card.classList.add("is-match");
+            } else {
+              item.card.classList.add("is-dimmed");
+            }
+          });
+
+          if (matched.length > 0) {
+            const first = matched[0];
+            const librarySlides = track.querySelectorAll(".folder-page");
+
+            librarySlides.forEach((slide, index) => {
+              if (index === first.libraryIndex) {
+                slide.style.display = "";
+              } else {
+                slide.style.display = "none";
+              }
+            });
+
+            track.style.transform = "translate3d(0, 0, 0)";
+            track.classList.remove("is-sliding");
+
+            const groupCards = Array.from(first.group.querySelectorAll("[data-folder-card]"));
+            const pageIndex = Math.floor(first.cardIndex / cardPageSize);
+            const groupPrev = first.group.querySelector("[data-folder-prev]");
+            const groupNext = first.group.querySelector("[data-folder-next]");
+            const groupPages = first.group.querySelector("[data-folder-pages]");
+
+            groupCards.forEach((card, index) => {
+              const start = pageIndex * cardPageSize;
+              const end = start + cardPageSize;
+              card.hidden = index < start || index >= end;
+            });
+
+            first.group.querySelectorAll("[data-folder-empty]").forEach((c) => c.remove());
+
+            let visibleCount = 0;
+            for (let i = pageIndex * cardPageSize; i < Math.min((pageIndex + 1) * cardPageSize, groupCards.length); i += 1) {
+              if (!groupCards[i].hidden) visibleCount += 1;
+            }
+            for (let i = visibleCount; i < cardPageSize; i += 1) {
+              const emptyCard = document.createElement("div");
+              emptyCard.className = "tool-card empty-card";
+              emptyCard.dataset.folderEmpty = "";
+              emptyCard.setAttribute("aria-hidden", "true");
+              first.group.querySelector("[data-folder-cards]").append(emptyCard);
+            }
+
+            if (groupPrev) groupPrev.disabled = pageIndex === 0;
+            if (groupNext) groupNext.disabled = pageIndex >= Math.ceil(groupCards.length / cardPageSize) - 1;
+            if (groupPages) {
+              groupPages.replaceChildren();
+              const pageCount = Math.max(1, Math.ceil(groupCards.length / cardPageSize));
+              for (let i = 0; i < pageCount; i += 1) {
+                const dot = document.createElement("button");
+                dot.type = "button";
+                dot.className = "page-dot";
+                if (i === pageIndex) dot.setAttribute("aria-current", "true");
+                groupPages.append(dot);
+              }
+            }
+
+            first.card.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        };
+
+        let searchTimer;
+        searchInput.addEventListener("input", () => {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(() => performSearch(searchInput.value), 180);
+        });
+
+        searchClear.addEventListener("click", () => {
+          searchInput.value = "";
+          performSearch("");
+          searchInput.focus();
+          track.querySelectorAll(".folder-page").forEach((slide) => { slide.style.display = ""; });
+          track.style.transform = "";
+          track.classList.add("is-sliding");
+        });
+
+        searchInput.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            searchInput.value = "";
+            performSearch("");
+            searchInput.blur();
+            track.querySelectorAll(".folder-page").forEach((slide) => { slide.style.display = ""; });
+            track.style.transform = "";
+            track.classList.add("is-sliding");
+          }
+        });
+      }
     })();
   </script>
 </body>
