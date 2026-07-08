@@ -1,0 +1,2048 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GithubPage 工具首页</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --bg-soft: #0c0d0f;
+      --panel: #111317;
+      --panel-soft: #171a20;
+      --text: #f5f7fb;
+      --muted: #9aa4b2;
+      --muted-strong: #c9d1dc;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.22);
+      --blue: #2f7df6;
+      --cyan: #2dd4bf;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.44);
+      --sans: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      --mono: Consolas, "SFMono-Regular", "Liberation Mono", Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: var(--sans);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 260px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 80px 80px, 80px 80px, auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(120deg, rgba(47, 125, 246, 0.16), transparent 30%, transparent 72%, rgba(45, 212, 191, 0.14)),
+        linear-gradient(180deg, transparent, rgba(5, 5, 5, 0.82) 78%);
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    svg {
+      display: block;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .site {
+      width: min(1200px, calc(100vw - 48px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: min(1200px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      color: var(--text);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+        #090a0c;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      flex: 0 0 auto;
+    }
+
+    .brand-mark svg {
+      width: 19px;
+      height: 19px;
+      stroke-width: 2.2;
+    }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      min-height: 34px;
+      padding: 0 11px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color 160ms ease, background 160ms ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+    }
+
+    .nav-cta {
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #050505;
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform 160ms ease, background 160ms ease;
+      white-space: nowrap;
+    }
+
+    .nav-cta:hover,
+    .nav-cta:focus-visible {
+      transform: translateY(-1px);
+      background: #eef3ff;
+      outline: none;
+    }
+
+    .nav-cta svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2.4;
+    }
+
+    .hero {
+      min-height: calc(100vh - 70px);
+      padding: 76px 0 74px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.96fr) minmax(420px, 1.04fr);
+      gap: 42px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted-strong);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(45, 212, 191, 0.84);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .hero-title {
+      max-width: 680px;
+      margin-top: 18px;
+      font-size: 68px;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+      white-space: nowrap;
+    }
+
+    .button.primary {
+      color: #050505;
+      background: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      border-color: rgba(255, 255, 255, 0.38);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .button.primary:hover,
+    .button.primary:focus-visible {
+      color: #050505;
+      background: #eef3ff;
+      border-color: #eef3ff;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.3;
+      flex: 0 0 auto;
+    }
+
+    .hero-meta {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 620px;
+    }
+
+    .meta-item {
+      min-height: 82px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .meta-item strong {
+      display: block;
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .meta-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .product-frame {
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+        #0a0b0e;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .frame-top {
+      min-height: 44px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dots {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+    }
+
+    .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .dots span:nth-child(1) {
+      background: #ff5f57;
+    }
+
+    .dots span:nth-child(2) {
+      background: #ffbd2e;
+    }
+
+    .dots span:nth-child(3) {
+      background: #28c840;
+    }
+
+    .frame-url {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .frame-body {
+      min-height: 520px;
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+    }
+
+    .tool-status {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .status-card {
+      min-height: 78px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .status-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .status-card strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .preview-shell {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f7f9fc;
+      overflow: hidden;
+      position: relative;
+      min-height: 390px;
+    }
+
+    .preview-bar {
+      min-height: 44px;
+      padding: 0 14px;
+      border-bottom: 1px solid #d8e0ec;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #64748b;
+      background: #ffffff;
+      font-size: 13px;
+    }
+
+    .preview-grid {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .preview-pane {
+      min-height: 278px;
+      border: 1px solid #d8e0ec;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #162033;
+      overflow: hidden;
+    }
+
+    .pane-head {
+      min-height: 38px;
+      padding: 0 11px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .code-lines {
+      padding: 13px;
+      color: #0f172a;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.78;
+      white-space: nowrap;
+    }
+
+    .code-lines .key {
+      color: #1769e0;
+    }
+
+    .code-lines .value {
+      color: #0e8f83;
+    }
+
+    .result-tree {
+      padding: 13px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .tree-row {
+      min-height: 28px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      color: #475569;
+      background: #f8fafc;
+      font-size: 12px;
+    }
+
+    .tree-row::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #1769e0;
+      flex: 0 0 auto;
+    }
+
+    .section {
+      padding: 92px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .section-kicker {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 42px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      max-width: 500px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    .folder-library {
+      display: grid;
+      gap: 14px;
+    }
+
+    .folder-window {
+      overflow: hidden;
+    }
+
+    .folder-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .folder-list.is-sliding {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      transform: translate3d(0, 0, 0);
+      transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .folder-page {
+      min-width: 100%;
+      flex: 0 0 100%;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      grid-auto-rows: max-content;
+    }
+
+    .library-pagination {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .library-arrow {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--muted-strong);
+      background: rgba(255, 255, 255, 0.055);
+      cursor: pointer;
+      transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .library-arrow:hover:not(:disabled),
+    .library-arrow:focus-visible:not(:disabled) {
+      border-color: rgba(255, 255, 255, 0.34);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .library-arrow:disabled {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    .library-arrow svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2.3;
+    }
+
+    .library-pages {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 34px;
+    }
+
+    .library-page-text {
+      min-width: 42px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      font-family: var(--mono);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .folder-list.is-sliding {
+        transition: none;
+      }
+    }
+
+    .folder-group {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .folder-head {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .folder-meta {
+      min-width: 0;
+    }
+
+    .folder-label {
+      min-height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--cyan);
+      background: rgba(45, 212, 191, 0.08);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .folder-title-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .folder-title {
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .folder-count {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .folder-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .folder-arrow {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--muted-strong);
+      background: rgba(255, 255, 255, 0.055);
+      cursor: pointer;
+      transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .folder-arrow:hover:not(:disabled),
+    .folder-arrow:focus-visible:not(:disabled) {
+      border-color: rgba(255, 255, 255, 0.34);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .folder-arrow:disabled {
+      opacity: 0.36;
+      cursor: default;
+    }
+
+    .folder-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.3;
+    }
+
+    .folder-cards {
+      min-height: 190px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      position: relative;
+    }
+
+    .card-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--muted-strong);
+      background: rgba(17, 19, 23, 0.94);
+      cursor: pointer;
+      z-index: 2;
+      backdrop-filter: blur(10px);
+      transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .card-nav-arrow:hover,
+    .card-nav-arrow:focus-visible {
+      border-color: rgba(255, 255, 255, 0.34);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(calc(-50% - 1px));
+      outline: none;
+    }
+
+    .card-nav-arrow--left {
+      left: -16px;
+    }
+
+    .card-nav-arrow--right {
+      right: -16px;
+    }
+
+    .card-nav-arrow svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.3;
+    }
+
+    .tool-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
+        var(--panel);
+      min-height: 190px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+
+    .tool-card[hidden] {
+      display: none;
+    }
+
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 14px 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.46), transparent);
+      opacity: 0.5;
+    }
+
+    a.tool-card:hover,
+    a.tool-card:focus-visible {
+      border-color: rgba(255, 255, 255, 0.34);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.045)),
+        var(--panel);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .tool-card.is-live {
+      background:
+        linear-gradient(145deg, rgba(47, 125, 246, 0.14), transparent 48%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+        var(--panel);
+    }
+
+    .empty-card {
+      border-style: dashed;
+      background: rgba(255, 255, 255, 0.018);
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .empty-card::after {
+      display: none;
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .card-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.1;
+    }
+
+    .tool-card h3 {
+      margin-top: 13px;
+      font-size: 19px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .tool-card p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.58;
+    }
+
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted-strong);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .card-bottom svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      flex: 0 0 auto;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .tag {
+      min-height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .folder-pages {
+      min-height: 22px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .page-dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+      cursor: pointer;
+      transition: width 160ms ease, background 160ms ease;
+    }
+
+    .page-dot[aria-current="true"] {
+      width: 22px;
+      background: var(--cyan);
+    }
+
+    .page-dot:focus-visible {
+      outline: 2px solid rgba(45, 212, 191, 0.62);
+      outline-offset: 3px;
+    }
+
+    .workflow {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .workflow-card {
+      min-height: 178px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .workflow-card span {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .workflow-card h3 {
+      margin-top: 12px;
+      font-size: 20px;
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+
+    .workflow-card p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .footer {
+      padding: 26px 0 36px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        min-height: auto;
+        padding-top: 58px;
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title {
+        max-width: 760px;
+        font-size: 58px;
+      }
+
+      .hero-meta,
+      .product-frame {
+        max-width: 760px;
+      }
+
+      .folder-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .workflow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+
+      .site,
+      .nav {
+        width: min(100% - 24px, 1200px);
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-top: 14px;
+      }
+
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding: 40px 0 56px;
+      }
+
+      .hero-title {
+        font-size: 40px;
+        line-height: 1.08;
+      }
+
+      .hero-copy {
+        font-size: 15px;
+      }
+
+      .hero-actions,
+      .button {
+        width: 100%;
+      }
+
+      .hero-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-status,
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .frame-body {
+        min-height: auto;
+        padding: 12px;
+      }
+
+      .preview-shell {
+        min-height: auto;
+      }
+
+      .preview-pane {
+        min-height: 220px;
+      }
+
+      .section {
+        padding: 62px 0;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .section-title {
+        font-size: 31px;
+      }
+
+      .folder-group {
+        padding: 14px;
+      }
+
+      .folder-head {
+        flex-direction: column;
+      }
+
+      .folder-controls {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .folder-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-card {
+        min-height: 178px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="nav" aria-label="站点导航">
+    <a class="brand" href="index.html" aria-label="GithubPage 首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16"></path>
+          <path d="M4 12h10"></path>
+          <path d="M4 17h7"></path>
+          <path d="m17 14 3 3-3 3"></path>
+        </svg>
+      </span>
+      <span class="brand-name">GithubPage</span>
+    </a>
+
+    <nav class="nav-links" aria-label="页面导航">
+      <a class="nav-link" href="#tools">Tools</a>
+      <a class="nav-link" href="#workflow">Structure</a>
+      <a class="nav-cta" href="Json/index.html">
+        JSON Parser
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m13 6 6 6-6 6"></path>
+        </svg>
+      </a>
+    </nav>
+  </header>
+
+  <main class="site">
+    <section class="hero" aria-label="首页介绍">
+      <div>
+        <p class="eyebrow">Personal tool workspace</p>
+        <h1 class="hero-title">在线工具</h1>
+        <p class="hero-copy">一个面向日常开发、调试和数据整理的轻量工具首页。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="Json/index.html">
+            打开 JSON 解析器
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m13 6 6 6-6 6"></path>
+            </svg>
+          </a>
+          <a class="button" href="#tools">
+            浏览工具
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+              <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+            </svg>
+          </a>
+        </div>
+
+        <div class="hero-meta" aria-label="站点概览">
+          <div class="meta-item">
+            <strong>04</strong>
+            <span>当前文件夹分组</span>
+          </div>
+          <div class="meta-item">
+            <strong>∞</strong>
+            <span>后续页面扩展</span>
+          </div>
+          <div class="meta-item">
+            <strong>GitHub</strong>
+            <span>Pages 静态部署</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="product-frame" aria-label="JSON 解析器界面预览">
+        <div class="frame-top">
+          <div class="dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="frame-url">shenxuan1999.github.io/GithubPage/Json/</span>
+        </div>
+        <div class="frame-body">
+          <div class="tool-status">
+            <div class="status-card">
+              <span>Active tool</span>
+              <strong>JSON Parser</strong>
+            </div>
+            <div class="status-card">
+              <span>Workflow</span>
+              <strong>Parse · Format · Copy</strong>
+            </div>
+          </div>
+
+          <div class="preview-shell">
+            <div class="preview-bar">
+              <span>JSON 解析器</span>
+              <span>Ready</span>
+            </div>
+            <div class="preview-grid">
+              <div class="preview-pane">
+                <div class="pane-head">
+                  <span>Input</span>
+                  <span>raw</span>
+                </div>
+                <div class="code-lines" aria-hidden="true">
+                  {<br>
+                  &nbsp;&nbsp;<span class="key">"tool"</span>: <span class="value">"json-parser"</span>,<br>
+                  &nbsp;&nbsp;<span class="key">"status"</span>: <span class="value">"ready"</span>,<br>
+                  &nbsp;&nbsp;<span class="key">"deploy"</span>: <span class="value">"pages"</span><br>
+                  }
+                </div>
+              </div>
+              <div class="preview-pane">
+                <div class="pane-head">
+                  <span>Output</span>
+                  <span>valid</span>
+                </div>
+                <div class="result-tree" aria-hidden="true">
+                  <div class="tree-row">root</div>
+                  <div class="tree-row">tool: json-parser</div>
+                  <div class="tree-row">status: ready</div>
+                  <div class="tree-row">deploy: pages</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="tools" class="section" aria-labelledby="tools-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Tool library</p>
+          <h2 id="tools-title" class="section-title">工具入口</h2>
+        </div>
+
+      </div>
+
+      <div class="folder-library" data-folder-library>
+        <div class="folder-window" data-library-window>
+          <div class="folder-list" data-folder-track>
+            <section class="folder-group" data-folder-group data-folder-name="Json" aria-labelledby="folder-json-title">
+              <div class="folder-head">
+                <div class="folder-meta">
+                  <span class="folder-label">/Json</span>
+                  <div class="folder-title-row">
+                    <h3 id="folder-json-title" class="folder-title">Json 工具</h3>
+                    <span class="folder-count">3 张卡片</span>
+                  </div>
+                </div>
+                <div class="folder-controls">
+                  <button class="folder-arrow" type="button" data-folder-prev aria-label="Json 上一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                  </button>
+                  <button class="folder-arrow" type="button" data-folder-next aria-label="Json 下一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="folder-cards" data-folder-cards>
+                <a class="tool-card is-live" data-folder-card href="Json/index.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="m8 9-3 3 3 3"></path>
+                        <path d="m16 9 3 3-3 3"></path>
+                        <path d="m14 5-4 14"></path>
+                      </svg>
+                    </span>
+                    <h3>JSON 解析器</h3>
+                    <p>格式化、校验、压缩、下载和复制 JSON，适合接口调试。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">Format</span>
+                      <span class="tag">Copy</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+                <a class="tool-card is-live" data-folder-card href="Json/ToCsharp.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M16 18 22 12 16 6"></path>
+                        <path d="M8 6 2 12 8 18"></path>
+                        <path d="M11 4 13 20"></path>
+                      </svg>
+                    </span>
+                    <h3>JSON 转 C# 类</h3>
+                    <p>识别 JSON 结构，生成 Pascal 命名的 C# 类和属性注释。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">C#</span>
+                      <span class="tag">Class</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+                <a class="tool-card is-live" data-folder-card href="Json/ToTypescript.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M16 18 22 12 16 6"></path>
+                        <path d="M8 6 2 12 8 18"></path>
+                        <path d="M11 4 13 20"></path>
+                      </svg>
+                    </span>
+                    <h3>C# 转 TypeScript 接口</h3>
+                    <p>根据 C# 类结构，生成 TypeScript 接口。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">TypeScript</span>
+                      <span class="tag">Interface</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+                <a class="tool-card is-live" data-folder-card href="Json/ToEntity.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 7h16"></path>
+                        <path d="M4 12h10"></path>
+                        <path d="M4 17h7"></path>
+                        <path d="m17 14 3 3-3 3"></path>
+                      </svg>
+                    </span>
+                    <h3>DDL 转 C# 实体</h3>
+                    <p>解析 MySQL / SQL Server 建表语句，生成 C# 实体类。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">DDL</span>
+                      <span class="tag">Entity</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+
+              </div>
+              <div class="folder-pages" data-folder-pages aria-label="Json 卡片分页"></div>
+            </section>
+
+            <section class="folder-group" data-folder-group data-folder-name="Base64"
+              aria-labelledby="folder-base64-title">
+              <div class="folder-head">
+                <div class="folder-meta">
+                  <span class="folder-label">/Base64</span>
+                  <div class="folder-title-row">
+                    <h3 id="folder-base64-title" class="folder-title">Base64 工具</h3>
+                    <span class="folder-count">1 张卡片</span>
+                  </div>
+                </div>
+                <div class="folder-controls">
+                  <button class="folder-arrow" type="button" data-folder-prev aria-label="Base64 上一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                  </button>
+                  <button class="folder-arrow" type="button" data-folder-next aria-label="Base64 下一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="folder-cards" data-folder-cards>
+                <a class="tool-card is-live" data-folder-card href="Base64/index.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect width="18" height="14" x="3" y="5" rx="2"></rect>
+                        <path d="m3 15 4-4 4 4 2-2 5 5"></path>
+                        <path d="M14 9h.01"></path>
+                      </svg>
+                    </span>
+                    <h3>Base64 转图片</h3>
+                    <p>粘贴 Base64 或 data:image 内容，自动识别类型并预览图片。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">Image</span>
+                      <span class="tag">Decode</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+
+
+
+
+
+
+
+
+
+              </div>
+              <div class="folder-pages" data-folder-pages aria-label="Base64 卡片分页"></div>
+            </section>
+
+            <section class="folder-group" data-folder-group data-folder-name="Cron" aria-labelledby="folder-cron-title">
+              <div class="folder-head">
+                <div class="folder-meta">
+                  <span class="folder-label">/Cron</span>
+                  <div class="folder-title-row">
+                    <h3 id="folder-cron-title" class="folder-title">Cron 工具</h3>
+                    <span class="folder-count">1 张卡片</span>
+                  </div>
+                </div>
+                <div class="folder-controls">
+                  <button class="folder-arrow" type="button" data-folder-prev aria-label="Cron 上一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                  </button>
+                  <button class="folder-arrow" type="button" data-folder-next aria-label="Cron 下一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="folder-cards" data-folder-cards>
+                <a class="tool-card is-live" data-folder-card href="Cron/index.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7v5l3 2"></path>
+                      </svg>
+                    </span>
+                    <h3>Cron 表达式生成器</h3>
+                    <p>生成 Quartz 风格 Cron，并预览最近运行时间。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">Quartz</span>
+                      <span class="tag">Preview</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+
+
+
+
+
+
+
+
+
+              </div>
+              <div class="folder-pages" data-folder-pages aria-label="Cron 卡片分页"></div>
+            </section>
+
+            <section class="folder-group" data-folder-group data-folder-name="Jwt" aria-labelledby="folder-jwt-title">
+              <div class="folder-head">
+                <div class="folder-meta">
+                  <span class="folder-label">/Jwt</span>
+                  <div class="folder-title-row">
+                    <h3 id="folder-jwt-title" class="folder-title">Jwt 工具</h3>
+                    <span class="folder-count">1 张卡片</span>
+                  </div>
+                </div>
+                <div class="folder-controls">
+                  <button class="folder-arrow" type="button" data-folder-prev aria-label="Jwt 上一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                  </button>
+                  <button class="folder-arrow" type="button" data-folder-next aria-label="Jwt 下一页">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="folder-cards" data-folder-cards>
+                <a class="tool-card is-live" data-folder-card href="Jwt/index.html">
+                  <span>
+                    <span class="card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path>
+                        <path d="M9 12h6"></path>
+                        <path d="M12 9v6"></path>
+                      </svg>
+                    </span>
+                    <h3>JWT 解析器</h3>
+                    <p>解析 Header、Payload 和 Signature，并检查 exp 过期状态。</p>
+                    <span class="tag-row">
+                      <span class="tag">Live</span>
+                      <span class="tag">JWT</span>
+                      <span class="tag">Decode</span>
+                    </span>
+                  </span>
+                  <span class="card-bottom">
+                    打开工具
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                  </span>
+                </a>
+
+
+
+
+
+
+
+
+
+
+              </div>
+              <div class="folder-pages" data-folder-pages aria-label="Jwt 卡片分页"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="library-pagination" data-library-pagination aria-label="文件夹分组分页">
+          <button class="library-arrow" type="button" data-library-prev aria-label="上一组文件夹">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+          </button>
+          <div class="library-pages" data-library-pages></div>
+          <span class="library-page-text" data-library-page-text>1 / 1</span>
+          <button class="library-arrow" type="button" data-library-next aria-label="下一组文件夹">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow" class="section" aria-labelledby="workflow-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Structure</p>
+          <h2 id="workflow-title" class="section-title">文件夹分组，工具页独立。</h2>
+        </div>
+        <p class="section-copy">首页只承担分组发现和跳转，每个具体工具继续留在自己的文件夹页面里。</p>
+      </div>
+
+      <div class="workflow">
+        <div class="workflow-card">
+          <span>01</span>
+          <h3>文件夹分组</h3>
+          <p>根目录首页按文件夹拆成分组，每屏最多展示四行。</p>
+        </div>
+        <div class="workflow-card">
+          <span>02</span>
+          <h3>双层分页</h3>
+          <p>外层按四个分组滑动，组内按 3 张卡片切换。</p>
+        </div>
+        <div class="workflow-card">
+          <span>03</span>
+          <h3>独立维护</h3>
+          <p>每个工具保留自己的目录和页面结构，新增入口时只补卡片。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site footer">
+    <span>GithubPage 工具首页</span>
+    <span>Copyright © 2026 shenxuan1999 · shenxuan1999@gmail.com</span>
+  </footer>
+
+  <script>
+    (() => {
+      const cardPageSize = 3;
+      const folderPageSize = 4;
+      const ignoredFolders = new Set(["visitor"]);
+      const library = document.querySelector("[data-folder-library]");
+
+      if (!library) {
+        return;
+      }
+
+      const track = library.querySelector("[data-folder-track]");
+      const initialGroups = Array.from(track.children).filter((child) => child.matches("[data-folder-group]"));
+
+      const cleanText = (value) => {
+        return (value || "").replace(/\s+/g, " ").trim();
+      };
+
+      const prettifyName = (value) => {
+        return value
+          .replace(/\.html$/i, "")
+          .replace(/[-_]+/g, " ")
+          .replace(/\b\w/g, (letter) => letter.toUpperCase());
+      };
+
+      const createSvg = (paths) => {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("stroke", "currentColor");
+        svg.setAttribute("stroke-linecap", "round");
+        svg.setAttribute("stroke-linejoin", "round");
+        svg.setAttribute("aria-hidden", "true");
+
+        paths.forEach((definition) => {
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", definition);
+          svg.append(path);
+        });
+
+        return svg;
+      };
+
+      const createArrowIcon = (direction) => {
+        return createSvg(direction === "left" ? ["m15 18-6-6 6-6"] : ["m9 18 6-6-6-6"]);
+      };
+
+      const createExternalIcon = () => {
+        return createSvg(["M5 12h14", "m13 6 6 6-6 6"]);
+      };
+
+      const createToolIcon = () => {
+        return createSvg(["M4 4h16v16H4z", "M8 8h8", "M8 12h5", "M8 16h8"]);
+      };
+
+      const createButton = (className, label, icon, hookName) => {
+        const button = document.createElement("button");
+        button.className = className;
+        button.type = "button";
+        button.dataset[hookName] = "";
+        button.setAttribute("aria-label", label);
+        button.append(icon);
+        return button;
+      };
+
+      const createTag = (text) => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = text;
+        return tag;
+      };
+
+      const createCardNavArrow = (direction, onClick) => {
+        const btn = document.createElement("button");
+        btn.className = `card-nav-arrow card-nav-arrow--${direction}`;
+        btn.type = "button";
+        btn.dataset.cardNav = "";
+        btn.setAttribute("aria-label", direction === "left" ? "上一页" : "下一页");
+        btn.append(createArrowIcon(direction));
+        btn.addEventListener("click", onClick);
+        return btn;
+      };
+
+      const createToolCard = (tool) => {
+        const card = document.createElement("a");
+        card.className = "tool-card is-live";
+        card.dataset.folderCard = "";
+        card.href = tool.href;
+
+        const content = document.createElement("span");
+        const icon = document.createElement("span");
+        icon.className = "card-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.append(createToolIcon());
+
+        const title = document.createElement("h3");
+        title.textContent = tool.title;
+
+        const description = document.createElement("p");
+        description.textContent = tool.description;
+
+        const tags = document.createElement("span");
+        tags.className = "tag-row";
+        tool.tags.forEach((tag) => tags.append(createTag(tag)));
+
+        content.append(icon, title, description, tags);
+
+        const bottom = document.createElement("span");
+        bottom.className = "card-bottom";
+        bottom.append("打开工具", createExternalIcon());
+
+        card.append(content, bottom);
+        return card;
+      };
+
+      const createFolderGroup = (folder) => {
+        const group = document.createElement("section");
+        const titleId = `folder-${folder.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-title`;
+
+        group.className = "folder-group";
+        group.dataset.folderGroup = "";
+        group.dataset.folderName = folder.name;
+        group.setAttribute("aria-labelledby", titleId);
+
+        const head = document.createElement("div");
+        head.className = "folder-head";
+
+        const meta = document.createElement("div");
+        meta.className = "folder-meta";
+
+        const label = document.createElement("span");
+        label.className = "folder-label";
+        label.textContent = `/${folder.name}`;
+
+        const titleRow = document.createElement("div");
+        titleRow.className = "folder-title-row";
+
+        const title = document.createElement("h3");
+        title.id = titleId;
+        title.className = "folder-title";
+        title.textContent = `${folder.name} 工具`;
+
+        const count = document.createElement("span");
+        count.className = "folder-count";
+        count.textContent = `${folder.tools.length} 张卡片`;
+
+        titleRow.append(title, count);
+
+        meta.append(label, titleRow);
+
+        const controls = document.createElement("div");
+        controls.className = "folder-controls";
+        controls.append(
+          createButton("folder-arrow", `${folder.name} 上一页`, createArrowIcon("left"), "folderPrev"),
+          createButton("folder-arrow", `${folder.name} 下一页`, createArrowIcon("right"), "folderNext")
+        );
+
+        head.append(meta, controls);
+
+        const cards = document.createElement("div");
+        cards.className = "folder-cards";
+        cards.dataset.folderCards = "";
+        folder.tools.forEach((tool) => cards.append(createToolCard(tool)));
+
+        const pages = document.createElement("div");
+        pages.className = "folder-pages";
+        pages.dataset.folderPages = "";
+        pages.setAttribute("aria-label", `${folder.name} 卡片分页`);
+
+        group.append(head, cards, pages);
+        return group;
+      };
+
+      const normalizeToolsData = (data) => {
+        const groups = Array.isArray(data) ? data : data.groups;
+
+        if (!Array.isArray(groups)) {
+          return [];
+        }
+
+        return groups.map((group) => {
+          const name = cleanText(group.name || group.folder);
+          const files = Array.isArray(group.tools) ? group.tools : [];
+
+          if (!name || ignoredFolders.has(name.toLowerCase())) {
+            return null;
+          }
+
+          const tools = files.map((tool) => {
+            const file = cleanText(tool.file || tool.href || "index.html");
+            const href = cleanText(tool.href) || `${encodeURIComponent(name)}/${encodeURIComponent(file)}`;
+            const tags = Array.isArray(tool.tags) && tool.tags.length ? tool.tags : [
+              name,
+              ...(file.toLowerCase() === "index.html" ? [] : ["HTML"])
+            ];
+            const visibleTags = tags
+              .map(cleanText)
+              .filter((tag) => tag && tag.toLowerCase() !== "index");
+
+            return {
+              title: cleanText(tool.title) || prettifyName(file),
+              description: cleanText(tool.description) || `${name} 文件夹下的 HTML 工具。`,
+              href,
+              tags: visibleTags
+            };
+          }).filter((tool) => tool.title && tool.href);
+
+          return {
+            name,
+            tools
+          };
+        }).filter(Boolean);
+      };
+
+      const loadToolsJson = async () => {
+        const response = await fetch("tools.json", { cache: "no-store" });
+
+        if (!response.ok) {
+          return [];
+        }
+
+        return normalizeToolsData(await response.json());
+      };
+
+      const initializeFolderGroup = (group) => {
+        const cardsContainer = group.querySelector("[data-folder-cards]");
+        const cards = Array.from(group.querySelectorAll("[data-folder-card]"));
+        const previousButton = group.querySelector("[data-folder-prev]");
+        const nextButton = group.querySelector("[data-folder-next]");
+        const pages = group.querySelector("[data-folder-pages]");
+        const count = group.querySelector(".folder-count");
+        const folderName = group.dataset.folderName || "工具";
+        const pageCount = Math.max(1, Math.ceil(cards.length / cardPageSize));
+        let currentPage = 0;
+
+        const render = () => {
+          const start = currentPage * cardPageSize;
+          const end = start + cardPageSize;
+          let visibleCount = 0;
+
+          cards.forEach((card, index) => {
+            card.hidden = index < start || index >= end;
+            if (!card.hidden) {
+              visibleCount += 1;
+            }
+          });
+
+          cardsContainer.querySelectorAll("[data-folder-empty]").forEach((card) => card.remove());
+          cardsContainer.querySelectorAll("[data-card-nav]").forEach((el) => el.remove());
+
+          for (let index = visibleCount; index < cardPageSize; index += 1) {
+            const emptyCard = document.createElement("div");
+            emptyCard.className = "tool-card empty-card";
+            emptyCard.dataset.folderEmpty = "";
+            emptyCard.setAttribute("aria-hidden", "true");
+            cardsContainer.append(emptyCard);
+          }
+
+          if (currentPage > 0) {
+            const leftArrow = createCardNavArrow("left", () => move(-1));
+            cardsContainer.append(leftArrow);
+          }
+
+          if (currentPage < pageCount - 1) {
+            const rightArrow = createCardNavArrow("right", () => move(1));
+            cardsContainer.append(rightArrow);
+          }
+
+          if (count) {
+            count.textContent = `${cards.length} 张卡片`;
+          }
+
+          previousButton.disabled = pageCount <= 1;
+          nextButton.disabled = pageCount <= 1;
+          pages.replaceChildren();
+
+          for (let index = 0; index < pageCount; index += 1) {
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "page-dot";
+            dot.setAttribute("aria-label", `${folderName} 第 ${index + 1} 页`);
+
+            if (index === currentPage) {
+              dot.setAttribute("aria-current", "true");
+            }
+
+            dot.addEventListener("click", () => {
+              currentPage = index;
+              render();
+            });
+
+            pages.append(dot);
+          }
+        };
+
+        const move = (direction) => {
+          if (pageCount <= 1) {
+            return;
+          }
+
+          currentPage = (currentPage + direction + pageCount) % pageCount;
+          render();
+        };
+
+        previousButton.addEventListener("click", () => move(-1));
+        nextButton.addEventListener("click", () => move(1));
+        render();
+      };
+
+      const initializeLibrary = (groups) => {
+        const previousButton = library.querySelector("[data-library-prev]");
+        const nextButton = library.querySelector("[data-library-next]");
+        const pageDots = library.querySelector("[data-library-pages]");
+        const pageText = library.querySelector("[data-library-page-text]");
+        const groupPages = [];
+        const pageCount = Math.max(1, Math.ceil(groups.length / folderPageSize));
+        let currentPage = 0;
+
+        groups.forEach((group, index) => {
+          if (index % folderPageSize === 0) {
+            const page = document.createElement("div");
+            page.className = "folder-page";
+            groupPages.push(page);
+          }
+
+          groupPages[groupPages.length - 1].append(group);
+        });
+
+        track.replaceChildren(...groupPages);
+        track.classList.add("is-sliding");
+
+        const render = () => {
+          track.style.transform = `translate3d(-${currentPage * 100}%, 0, 0)`;
+          previousButton.disabled = pageCount <= 1;
+          nextButton.disabled = pageCount <= 1;
+          pageDots.replaceChildren();
+          pageText.textContent = `${currentPage + 1} / ${pageCount}`;
+
+          for (let index = 0; index < pageCount; index += 1) {
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "page-dot";
+            dot.setAttribute("aria-label", `文件夹分组第 ${index + 1} 页`);
+
+            if (index === currentPage) {
+              dot.setAttribute("aria-current", "true");
+            }
+
+            dot.addEventListener("click", () => {
+              currentPage = index;
+              render();
+            });
+
+            pageDots.append(dot);
+          }
+        };
+
+        const move = (direction) => {
+          if (pageCount <= 1) {
+            return;
+          }
+
+          currentPage = (currentPage + direction + pageCount) % pageCount;
+          render();
+        };
+
+        previousButton.addEventListener("click", () => move(-1));
+        nextButton.addEventListener("click", () => move(1));
+        render();
+      };
+
+      const boot = async () => {
+        let groups = initialGroups;
+
+        try {
+          const folders = await loadToolsJson();
+
+          if (folders.length) {
+            groups = folders.map(createFolderGroup);
+          }
+        } catch (error) {
+          groups = initialGroups;
+        }
+
+        if (!groups.length) {
+          return;
+        }
+
+        track.replaceChildren(...groups);
+        groups.forEach(initializeFolderGroup);
+        initializeLibrary(groups);
+      };
+
+      boot();
+    })();
+  </script>
+</body>
+
+</html>
