@@ -1177,6 +1177,7 @@
 </head>
 
 <body>
+  <!-- 导航头部 -->
   <header class="nav" aria-label="站点导航">
     <a class="brand" href="index.html" aria-label="SnapTools 首页">
       <span class="brand-mark" aria-hidden="true">
@@ -1193,14 +1194,16 @@
     <nav class="nav-links" aria-label="页面导航">
       <div class="nav-search" data-nav-search>
         <button class="search-toggle" type="button" data-search-toggle aria-label="搜索工具">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.3-4.3"></path>
           </svg>
         </button>
         <input class="search-input" type="search" placeholder="" data-search-input autocomplete="off">
         <button class="search-clear" type="button" data-search-clear aria-label="清除搜索">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
             <path d="M18 6 6 18"></path>
             <path d="m6 6 12 12"></path>
           </svg>
@@ -1220,6 +1223,7 @@
   </header>
 
   <main class="site">
+    <!-- 首页介绍 -->
     <section class="hero" aria-label="首页介绍">
       <div>
         <p class="eyebrow">Personal tool workspace</p>
@@ -1319,20 +1323,21 @@
         </div>
       </aside>
     </section>
-
+    <!-- 工具入口 -->
     <section id="tools" class="section" aria-labelledby="tools-title">
       <div class="section-head">
         <div>
           <p class="section-kicker">Tool library</p>
           <h2 id="tools-title" class="section-title">工具入口</h2>
         </div>
-
       </div>
 
       <div class="folder-library" data-folder-library>
         <div class="folder-window" data-library-window>
           <div class="folder-list" data-folder-track>
+            <!-- Json分组 -->
             <section class="folder-group" data-folder-group data-folder-name="Json" aria-labelledby="folder-json-title">
+              <!-- 分组描述 -->
               <div class="folder-head">
                 <div class="folder-meta">
                   <span class="folder-label">/Json</span>
@@ -1356,8 +1361,9 @@
                   </button>
                 </div>
               </div>
-
+              <!-- 组内卡片          -->
               <div class="folder-cards" data-folder-cards>
+                <!-- JSON 解析器 -->
                 <a class="tool-card is-live" data-folder-card href="Json/index.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1385,7 +1391,7 @@
                     </svg>
                   </span>
                 </a>
-
+                <!-- JSON / C# 双向解析 -->
                 <a class="tool-card is-live" data-folder-card href="Json/ToCsharp.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1413,7 +1419,7 @@
                     </svg>
                   </span>
                 </a>
-
+                <!-- 根据 C# 类结构，生成 TypeScript 接口 -->
                 <a class="tool-card is-live" data-folder-card href="Json/ToTypescript.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1425,7 +1431,7 @@
                       </svg>
                     </span>
                     <h3>C# 转 TypeScript 接口</h3>
-                    <p>根据 C# 类结构，生成 TypeScript 接口。</p>
+                    <p>根据 C# 类结构，生成 TypeScript 接口</p>
                     <span class="tag-row">
                       <span class="tag">C#</span>
                       <span class="tag">TypeScript</span>
@@ -1441,7 +1447,7 @@
                     </svg>
                   </span>
                 </a>
-
+                <!-- DDL 转 C# 实体 -->
                 <a class="tool-card is-live" data-folder-card href="Json/ToEntity.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1471,14 +1477,14 @@
                     </svg>
                   </span>
                 </a>
-
-
               </div>
               <div class="folder-pages" data-folder-pages aria-label="Json 卡片分页"></div>
             </section>
 
+            <!-- Base64分组 -->
             <section class="folder-group" data-folder-group data-folder-name="Base64"
               aria-labelledby="folder-base64-title">
+              <!-- 分组描述 -->
               <div class="folder-head">
                 <div class="folder-meta">
                   <span class="folder-label">/Base64</span>
@@ -1502,8 +1508,9 @@
                   </button>
                 </div>
               </div>
-
+              <!-- 组内卡片 -->
               <div class="folder-cards" data-folder-cards>
+                <!-- Base64 转图片 -->
                 <a class="tool-card is-live" data-folder-card href="Base64/index.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1531,21 +1538,13 @@
                     </svg>
                   </span>
                 </a>
-
-
-
-
-
-
-
-
-
-
               </div>
               <div class="folder-pages" data-folder-pages aria-label="Base64 卡片分页"></div>
             </section>
 
+            <!-- Cron分组 -->
             <section class="folder-group" data-folder-group data-folder-name="Cron" aria-labelledby="folder-cron-title">
+              <!-- 分组描述 -->
               <div class="folder-head">
                 <div class="folder-meta">
                   <span class="folder-label">/Cron</span>
@@ -1569,8 +1568,9 @@
                   </button>
                 </div>
               </div>
-
+              <!-- 组内卡片 -->
               <div class="folder-cards" data-folder-cards>
+                <!-- Cron 表达式生成器 -->
                 <a class="tool-card is-live" data-folder-card href="Cron/index.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1597,21 +1597,13 @@
                     </svg>
                   </span>
                 </a>
-
-
-
-
-
-
-
-
-
-
               </div>
               <div class="folder-pages" data-folder-pages aria-label="Cron 卡片分页"></div>
             </section>
 
+            <!-- Jwt分组 -->
             <section class="folder-group" data-folder-group data-folder-name="Jwt" aria-labelledby="folder-jwt-title">
+              <!-- 分组描述 -->
               <div class="folder-head">
                 <div class="folder-meta">
                   <span class="folder-label">/Jwt</span>
@@ -1635,8 +1627,9 @@
                   </button>
                 </div>
               </div>
-
+              <!-- 组内卡片 -->
               <div class="folder-cards" data-folder-cards>
+                <!-- JWT 解析器 -->
                 <a class="tool-card is-live" data-folder-card href="Jwt/index.html">
                   <span>
                     <span class="card-icon" aria-hidden="true">
@@ -1664,16 +1657,6 @@
                     </svg>
                   </span>
                 </a>
-
-
-
-
-
-
-
-
-
-
               </div>
               <div class="folder-pages" data-folder-pages aria-label="Jwt 卡片分页"></div>
             </section>
@@ -1699,30 +1682,31 @@
       </div>
     </section>
 
+    <!-- 底部介绍 -->
     <section id="workflow" class="section" aria-labelledby="workflow-title">
       <div class="section-head">
         <div>
           <p class="section-kicker">Structure</p>
-          <h2 id="workflow-title" class="section-title">文件夹分组，工具页独立。</h2>
+          <h2 id="workflow-title" class="section-title">文件夹分组，工具页独立</h2>
         </div>
-        <p class="section-copy">首页只承担分组发现和跳转，每个具体工具继续留在自己的文件夹页面里。</p>
+        <p class="section-copy">首页只承担分组发现和跳转，每个具体工具继续留在自己的文件夹页面里</p>
       </div>
 
       <div class="workflow">
         <div class="workflow-card">
           <span>01</span>
           <h3>文件夹分组</h3>
-          <p>根目录首页按文件夹拆成分组，每屏最多展示四行。</p>
+          <p>根目录首页按文件夹拆成分组，每屏最多展示四行</p>
         </div>
         <div class="workflow-card">
           <span>02</span>
           <h3>双层分页</h3>
-          <p>外层按四个分组滑动，组内按 3 张卡片切换。</p>
+          <p>外层按四个分组滑动，组内按 3 张卡片切换</p>
         </div>
         <div class="workflow-card">
           <span>03</span>
           <h3>独立维护</h3>
-          <p>每个工具保留自己的目录和页面结构，新增入口时只补卡片。</p>
+          <p>每个工具保留自己的目录和页面结构，新增入口时只补卡片</p>
         </div>
       </div>
     </section>
