@@ -24,8 +24,6 @@
 ```
 SnapTools/
 ├── index.html              # 首页
-├── tools.json              # 工具索引（由脚本自动生成）
-├── generate-tools.js       # 扫描各目录 HTML 生成 tools.json
 ├── Base64/
 │   └── index.html          # Base64 转图片
 ├── Cron/
@@ -56,7 +54,4 @@ npx serve .
 ## 添加新工具
 
 1. 在根目录新建文件夹，放入 HTML 文件。
-2. 运行 `node generate-tools.js` 更新 `tools.json`。
-3. 首页会自动展示新工具。
-
-脚本会从每个 HTML 的 `<title>` / `<h1>` / `<meta description>` 中提取标题与描述，无需手动编辑索引。
+2. 在首页 `index.html` 的 `[data-folder-track]` 容器中添加对应的 `[data-folder-group]` 卡片分组，首页会自动展示新工具。
